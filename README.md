@@ -26,8 +26,9 @@ The setup simulates multiple clients contributing to a shared global model, allo
 - **Evaluation Metrics**: Accuracy, loss, and performance across clients  
 - **Experiment Modules**: Separate runs for synthetic and real datasets  
 
+---
 
-##Results
+## Results
 Organized under:
 RealIncomeDataset/results/
 SyntheticData/results/

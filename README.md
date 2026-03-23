@@ -29,7 +29,7 @@ The setup simulates multiple clients contributing to a shared global model, allo
 ---
 
 ## Results
-Organized under:
+Organized under:  
 RealIncomeDataset/results/  
 SyntheticData/results/  
 Includes:

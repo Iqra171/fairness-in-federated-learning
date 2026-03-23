@@ -30,7 +30,7 @@ The setup simulates multiple clients contributing to a shared global model, allo
 
 ## Results
 Organized under:
-RealIncomeDataset/results/
+RealIncomeDataset/results/  
 SyntheticData/results/
 Includes:
 - Seed-wise performance plots

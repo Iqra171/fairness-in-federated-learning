@@ -27,3 +27,12 @@ The setup simulates multiple clients contributing to a shared global model, allo
 - **Experiment Modules**: Separate runs for synthetic and real datasets  
 
 
+##Results
+Organized under:
+RealIncomeDataset/results/
+SyntheticData/results/
+Includes:
+- Seed-wise performance plots
+- Attack vs defense heatmaps
+- Time-series comparisons
+- Defense evaluation visualizations

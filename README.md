@@ -31,9 +31,14 @@ The setup simulates multiple clients contributing to a shared global model, allo
 ## Results
 Organized under:
 RealIncomeDataset/results/  
-SyntheticData/results/
+SyntheticData/results/  
 Includes:
 - Seed-wise performance plots
 - Attack vs defense heatmaps
 - Time-series comparisons
 - Defense evaluation visualizations
+
+---
+
+## Notes
+This project is for experimental and research purposes.

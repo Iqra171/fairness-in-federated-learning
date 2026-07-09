@@ -1,18 +1,46 @@
-Federated Learning: Fairness and Robustness under Adversarial Attacks
-Overview
+# Federated Learning: Fairness and Robustness under Adversarial Attacks
 
-This repository contains a comprehensive experimental framework for studying fairness, robustness, and security in Federated Learning (FL). The project evaluates how different adversarial attacks influence both model performance and fairness, and compares several aggregation strategies designed to mitigate malicious client behavior.
+> A comprehensive experimental framework for evaluating fairness-aware and Byzantine-robust federated learning on **real-world** and **synthetic** datasets.
 
-Experiments are conducted on both:
+---
 
-Real-world dataset: UCI Adult Income
-Synthetic dataset: Generated binary classification data with controlled demographic bias
+## 📖 Table of Contents
 
-To ensure statistical reliability, every experiment is repeated across multiple random seeds (42, 100, and 999) and results are reported as mean ± standard deviation.
+- [Overview](#overview)
+- [Repository Structure](#repository-structure)
+- [Objectives](#objectives)
+- [Datasets](#datasets)
+- [Federated Learning Setup](#federated-learning-setup)
+- [Attack Strategies](#attack-strategies)
+- [Defense Strategies](#defense-strategies)
+- [Evaluation Metrics](#evaluation-metrics)
+- [Experiments](#experiments)
+- [Results](#results)
+- [Key Findings](#key-findings)
+- [Technologies Used](#technologies-used)
+- [Future Work](#future-work)
 
-Repository Structure
+---
+
+# Overview
+
+This repository presents a comprehensive framework for studying **fairness**, **robustness**, and **security** in Federated Learning (FL).
+
+The project evaluates how different adversarial attacks affect both model performance and fairness, while comparing multiple aggregation strategies designed to defend against malicious clients.
+
+Experiments are performed on:
+
+- 📊 **Real Dataset:** UCI Adult Income Dataset
+- 🧪 **Synthetic Dataset:** Controlled binary classification dataset
+
+To ensure reproducibility, every experiment is repeated across **three random seeds (42, 100, 999)**, with results reported as **Mean ± Standard Deviation**.
+
+---
+
+# Repository Structure
+
+```text
 Federated-Learning-Fairness/
-
 │
 ├── RealIncomeDataset/
 │   ├── RealIncomeDataset.ipynb
@@ -27,55 +55,70 @@ Federated-Learning-Fairness/
 ├── images/
 │
 └── README.md
-Project Objectives
+```
 
-The experiments aim to investigate:
+---
 
-Federated learning under heterogeneous (non-IID) client distributions
-Robustness against malicious client updates
-Fairness-aware aggregation strategies
-Trade-offs between prediction accuracy and fairness
-Effectiveness of Byzantine-robust defenses
-Behavior of adaptive adversarial attacks
-Stability across multiple random seeds
-Datasets
-1. Real Dataset — UCI Adult Income
+# Objectives
 
-The Adult Income dataset is used to evaluate fairness on a realistic classification problem.
+The project investigates:
 
-Properties
+- Federated learning under non-IID client distributions
+- Byzantine robustness against malicious clients
+- Fairness-aware aggregation strategies
+- Trade-offs between robustness, fairness, and accuracy
+- Adaptive adversarial attacks
+- Multi-seed reproducibility
 
-48,842 samples
-13 input features
-Binary classification:
-Income > $50K
-Income ≤ $50K
-Sensitive attribute:
-Sex
-Split across 6 simulated federated clients
-Clients contain heterogeneous data distributions and injected local demographic bias.
-2. Synthetic Dataset
+---
 
-A controlled synthetic dataset generated using make_classification().
+# Datasets
 
-Properties
+## 📊 Real Dataset — UCI Adult Income
 
-2,000 samples
-10 features
-Binary classification
-Artificial sensitive attribute
-Controlled demographic bias
-Non-IID partitioning across 6 clients
-Allows reproducible experiments where fairness violations can be precisely controlled.
-Federated Learning Setup
+| Property | Value |
+|----------|-------|
+| Samples | 48,842 |
+| Features | 13 |
+| Task | Binary Income Classification |
+| Sensitive Attribute | Sex |
+| Clients | 6 |
+| Distribution | Non-IID |
 
-The simulated FL environment contains:
+The dataset is partitioned across six simulated clients with heterogeneous data distributions and injected demographic bias.
 
-6 clients
-2 malicious clients
-20 communication rounds
-Local training for 5 epochs
-Feed-forward neural network
+---
+
+## 🧪 Synthetic Dataset
+
+Synthetic data is generated using `sklearn.make_classification()`.
+
+| Property | Value |
+|----------|-------|
+| Samples | 2,000 |
+| Features | 10 |
+| Task | Binary Classification |
+| Sensitive Attribute | Artificial Binary Group |
+| Clients | 6 |
+| Distribution | Non-IID |
+
+The synthetic dataset provides complete control over demographic bias, making it useful for reproducible fairness experiments.
+
+---
+
+# Federated Learning Setup
+
+| Parameter | Value |
+|------------|------|
+| Clients | 6 |
+| Adversaries | 2 |
+| Communication Rounds | 20 |
+| Local Epochs | 5 |
+| Attack Start | Round 5 |
+
+### Model Architecture
+
+```text
 Input
  ↓
 Linear (64)
@@ -89,110 +132,137 @@ Linear (32)
 ReLU
  ↓
 Linear (1)
+```
 
-Attacks become active beginning at Round 5.
+---
 
-Attack Strategies
-Attack	Description
-none	Honest client training (baseline)
-random	Sends random model parameters
-label_flip	Flips labels for part of the sensitive group
-gradient_scale	Scales malicious gradients before aggregation
-fairness_poison	Intentionally biases predictions against a demographic group
-fairness_spoof	Appears fair locally while introducing hidden global bias
-adaptive	Stealthy attack that minimizes detection while degrading global fairness
-Aggregation Methods (Defenses)
-Defense	Description
-FedAvg	Standard Federated Averaging
-Median	Coordinate-wise median aggregation
-Trimmed Mean	Removes extreme client updates before averaging
-Krum	Byzantine-robust aggregation using distance-based selection
-Fairness Only	Fairness-weighted aggregation based on client DP scores
-Robust Fair	Combines robustness and fairness through trust-based weighting
-Evaluation Metrics
+# Attack Strategies
 
-Each experiment reports:
+| Attack | Description |
+|---------|-------------|
+| **none** | Honest client training |
+| **random** | Sends random model weights |
+| **label_flip** | Flips labels for part of the sensitive group |
+| **gradient_scale** | Amplifies malicious gradients |
+| **fairness_poison** | Introduces demographic bias |
+| **fairness_spoof** | Appears locally fair while introducing hidden global bias |
+| **adaptive** | Evades detection while degrading fairness |
 
-Performance
-Accuracy
-Fairness
-Demographic Parity (DP) Gap
-Equalized Odds (EO) Gap
+---
 
-Lower fairness gaps indicate fairer predictions.
+# Defense Strategies
 
-Experiments
+| Defense | Description |
+|----------|-------------|
+| **FedAvg** | Standard Federated Averaging |
+| **Median** | Coordinate-wise Median |
+| **Trimmed Mean** | Removes extreme updates |
+| **Krum** | Byzantine-robust aggregation |
+| **Fairness Only** | Fairness-weighted aggregation |
+| **Robust Fair** | Trust-based fairness + robustness aggregation |
 
-Experiments are performed independently on both datasets.
+---
+
+# Evaluation Metrics
+
+The following metrics are recorded during every communication round.
+
+### Performance Metrics
+
+- Accuracy
+
+### Fairness Metrics
+
+- Demographic Parity (DP) Gap
+- Equalized Odds (EO) Gap
+
+> Lower DP Gap and EO Gap indicate fairer predictions.
+
+---
+
+# Experiments
+
+Experiments are independently conducted on both datasets.
 
 Each experiment evaluates:
 
-Different attacks
-Different defenses
-Multiple random seeds
-Training dynamics over communication rounds
+- Different attack strategies
+- Different aggregation methods
+- Multiple random seeds
+- Communication round dynamics
 
-The following attack-defense combinations are analyzed:
+The following attack-defense combinations are included.
 
-Attack vs FedAvg
-Fairness Poison vs all defenses
-Adaptive vs all defenses
-Fairness Spoof vs selected defenses
-Baseline (no attack)
-Visualizations
+| Attack | Defenses Evaluated |
+|---------|-------------------|
+| None | FedAvg, Median, Fairness Only, Robust Fair |
+| Random | FedAvg |
+| Label Flip | FedAvg |
+| Gradient Scale | FedAvg |
+| Fairness Poison | All Defenses |
+| Fairness Spoof | FedAvg, Median, Robust Fair |
+| Adaptive | FedAvg, Median, Krum, Fairness Only, Robust Fair |
 
-Each dataset produces several visualizations.
+---
 
-Training Curves
-Accuracy over communication rounds
-Demographic Parity Gap over rounds
-Equalized Odds Gap over rounds
-Multi-Seed Analysis
-Mean ± Standard Deviation accuracy
-Mean ± Standard Deviation DP Gap
-Cross-seed stability comparison
-Heatmaps
+# Results
 
-Attack vs Defense comparison for:
+Each dataset produces:
 
-Accuracy
-Demographic Parity Gap
-Distribution Plots
-Accuracy distribution across attacks
-DP Gap distribution across defenses
-Trade-off Analysis
-Accuracy vs Fairness scatter plots
-Defense comparison
-Robustness comparison
-Experimental Findings
-Real Dataset (Adult Income)
-Baseline FedAvg achieves approximately 85% accuracy.
-Fairness poisoning substantially increases fairness disparities while reducing predictive performance.
-Robust aggregation methods such as Median and Robust Fair significantly reduce demographic parity gaps under attack.
-Adaptive attacks remain difficult to detect because they preserve local fairness while affecting global model behavior.
-Byzantine-robust defenses improve fairness at a small cost in overall accuracy.
-Synthetic Dataset
-Baseline FedAvg achieves approximately 80% accuracy with a DP Gap of around 0.013.
-Fairness Poison is the most damaging attack, reducing accuracy and producing the largest demographic parity gap.
-Fairness Spoof has minimal impact on accuracy but successfully conceals demographic bias, making it particularly difficult to identify.
-Adaptive attacks maintain high predictive performance while subtly influencing fairness metrics.
-Krum and Trimmed Mean consistently provide strong robustness against malicious updates.
-Robust Fair offers a balanced trade-off between prediction accuracy and fairness across most attack scenarios.
-Reproducibility
+✅ Training Curves
 
-Experiments are repeated using three random seeds:
+- Accuracy over communication rounds
+- Demographic Parity Gap
+- Equalized Odds Gap
 
-42
-100
-999
+✅ Multi-Seed Analysis
 
-Results are reported as:
+- Mean ± Standard Deviation Accuracy
+- Mean ± Standard Deviation DP Gap
+- Cross-seed comparison
 
-Mean ± Standard Deviation
+✅ Heatmaps
 
-to reduce randomness and improve reproducibility.
+- Attack vs Defense Accuracy
+- Attack vs Defense DP Gap
 
-Results Directory
+✅ Distribution Plots
+
+- Accuracy Distribution
+- DP Gap Distribution
+
+✅ Trade-off Analysis
+
+- Accuracy vs Fairness
+- Defense Comparison
+
+---
+
+# Key Findings
+
+## 📊 Real Dataset
+
+- Baseline FedAvg achieves approximately **85% accuracy**.
+- Fairness poisoning significantly degrades both fairness and predictive performance.
+- Robust aggregation methods (Median and Robust Fair) reduce demographic disparity while maintaining competitive accuracy.
+- Adaptive attacks remain difficult to detect because they preserve local fairness while affecting the global model.
+
+---
+
+## 🧪 Synthetic Dataset
+
+- Baseline FedAvg achieves approximately **80% accuracy** with a DP Gap around **0.013**.
+- Fairness Poison causes the largest fairness degradation.
+- Fairness Spoof maintains accuracy while concealing demographic bias.
+- Adaptive attacks remain highly stealthy.
+- Krum and Trimmed Mean consistently improve robustness.
+- Robust Fair provides a balanced trade-off between fairness and predictive performance.
+
+---
+
+# Results Directory
+
+```text
 RealIncomeDataset/
 └── experiment_results/
     ├── results_seed_42.png
@@ -200,7 +270,6 @@ RealIncomeDataset/
     ├── results_seed_999.png
     ├── comparison_across_seeds.png
     ├── heatmap_attack_defense.png
-    ├── time_series_comparison.png
     └── ...
 
 SyntheticData/
@@ -210,24 +279,38 @@ SyntheticData/
     ├── results_seed_999.png
     ├── comparison_across_seeds.png
     ├── heatmap_attack_defense.png
-    ├── time_series_comparison.png
     └── ...
-Technologies Used
-Python
-PyTorch
-NumPy
-Scikit-learn
-Matplotlib
-Pandas
-Google Colab / Jupyter Notebook
-Future Work
+```
+
+---
+
+# Technologies Used
+
+- Python
+- PyTorch
+- NumPy
+- Pandas
+- Scikit-learn
+- Matplotlib
+- Jupyter Notebook / Google Colab
+
+---
+
+# Future Work
 
 Potential extensions include:
 
-Differential Privacy in Federated Learning
-Secure Aggregation protocols
-Personalized Federated Learning
-Graph-based Federated Learning
-Transformer-based client models
-Additional fairness metrics (Equal Opportunity, Calibration, etc.)
-Real-world federated benchmark datasets (COMPAS, CelebA, FEMNIST, etc.)
+- Differential Privacy
+- Secure Aggregation
+- Personalized Federated Learning
+- Transformer-based FL
+- Graph Federated Learning
+- Additional fairness metrics
+- Larger real-world federated datasets
+
+
+---
+
+## ⭐ Acknowledgement
+
+This repository was developed for research on **Fairness and Robustness in Federated Learning**, exploring how adversarial attacks influence machine learning systems and how fairness-aware defenses can mitigate their effects.
